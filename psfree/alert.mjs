@@ -17,7 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 // We can't just open a console on the ps4 browser, make sure the errors thrown
 // by our program are alerted. We use alert() instead of debug_log() because
-// while we are developing, we may modify the utils.js module and introduce
+// while we are developing, we may modify the utils.mjs module and introduce
 // bugs. We can not use debug_log() if it throws an error.
 
 // We log the line and column numbers as well since some exceptions (like
@@ -46,4 +46,4 @@ addEventListener('error', event => {
 
 // we have to dynamically import the program if we want to catch its syntax
 // errors
-import('./psfree.js');
+import('./psfree.mjs');

@@ -1,12 +1,22 @@
 :root{
-    --primary-color: #333348;
+    --text-color-primary: #fff;
+    --text-color-secondary: #ccc;
+    --text-color-tertiary: #999;
+    --background-color-primary: #0c0c0f;
+    --surface-color-primary: #202125;
+    --surface-color-secondary: #15161a;
+    --surface-color-hover: #a2a2a6;
+    --text-color-primary-hover: #202020;
+    --text-color-secondary-hover: #444;
+
+    font-size: 17px;
 }
 
 body {
     user-select: none;
     -webkit-user-select: none;
-    background-color: rgb(14, 14, 20);
-    color: white;
+    background-color: var(--background-color-primary);
+    color: var(--text-color-primary);
     font-family: Arial;
 
     display: grid;
@@ -23,7 +33,7 @@ input:focus {
 }
 
 a {
-    color: #e3e3e3;
+    color: var(--text-color-secondary);
 }
 
 a:active,
@@ -42,18 +52,19 @@ a:focus {
     cursor: pointer;
     line-height: 2.5rem;
     min-width: 5rem;
-    border-radius: 1rem;
+    border-radius: 1.25rem;
     width: 50%;
-    background-color: var(--primary-color);
+    background-color: var(--surface-color-primary);
     border: none;
-    color: #fff;
+    color: var(--text-color-primary);
     font-size: 1.3rem;
-    transition: background-color 0.3s ease-in-out;
+    transition: background-color 0.25s ease;
+    box-sizing: border-box;
 }
 
 .btn:hover {
-    background-color: #c2c2c2;
-    color: #303030;
+    background-color: var(--surface-color-hover);
+    color: var(--text-color-primary-hover);
 }
 
 
@@ -75,6 +86,66 @@ a:focus {
     display: flex;
 }
 
+#payloads-view {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-rows: auto;
+    column-gap: 2.5rem;
+    row-gap: 1rem;
+    padding: 0 2rem 2rem 2rem;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    box-sizing: border-box;
+    align-content: start;
+}
+
+#payloads-view .btn {
+    width: 100% !important;
+}
+
+.payload-btn-title {
+    line-height: 2.5rem;
+    font-weight: bolder;
+    font-size: 1.3rem;
+    padding: 0;
+    margin: 0;
+}
+
+.payload-btn-description {
+    color: var(--text-color-secondary);
+    margin: 0;
+    padding: 0;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    line-height: 2rem;
+    font-size: 1rem;
+    max-width: 100%;
+}
+
+.btn:hover p.payload-btn-description {
+    color: var(--text-color-secondary-hover);
+}
+
+.payload-btn-info {
+    color: var(--text-color-tertiary);
+    margin: 0;
+    padding: 0;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    line-height: 1.5rem;
+    font-size: 0.9rem;
+    font-weight: normal;
+    line-clamp: 3;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+.btn:hover p.payload-btn-info {
+    color: var(--text-color-tertiary-hover);
+}
+
+
 .selected {
     opacity: 1 !important;
     pointer-events: auto !important;
@@ -89,10 +160,10 @@ a:focus {
 }
 
 .toast {
-    background: #181830;
-    color: #fff;
+    background: var(--surface-color-secondary);
+    color: var(--text-color-primary);
     padding: 20px 25px;
-    border-radius: 5px;
+    border-radius: 1rem;
     margin-top: 10px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
     max-width: 300px;
@@ -130,22 +201,50 @@ a:focus {
 
 .log {
     display: flex;
+    flex-direction: column;
     flex-grow: 1;
     unicode-bidi: embed;
     font-family: monospace;
     white-space: pre;
-    font-size: 1.2rem;
-    color: #fff;
+    color: var(--text-color-primary);
     background-color: inherit;
-    border: var(--primary-color) 1px solid;
+    border: var(--surface-color-primary) 1px solid;
     border-radius: 5px;
     padding: 8px;
     margin: 8px;
     box-sizing: border-box;
+    overflow-y: auto;
 }
 
 
+.LOG-DEBUG {
+    color: #bbddbb;
+}
 
+.LOG-INFO {
+    color: #bbbbbb;
+}
+
+.LOG-LOG {
+    color: #ffffff;
+}
+
+.LOG-WARN {
+    color: #ffcc00;
+}
+
+.LOG-ERROR {
+    color: #ff6666;
+}
+
+.LOG-SUCCESS {
+    color: #66ff66;
+}
+
+.log:active, .log:focus {
+    outline: 0;
+    border: none;
+}
 
 .position-relative { position: relative;}
 .position-absolute { position: absolute; }
@@ -153,13 +252,16 @@ a:focus {
 .d-none { display: none !important; }
 .d-flex { display: flex; }
 
+.flex-direction-column { flex-direction: column; }
+.flex-direction-row { flex-direction: row; }
+
 .align-items-center { align-items: center; }
 .justify-content-center { justify-content: center; }
 
 .text-center { text-align: center; }
-.text-bold { font-weight: 700; }
+.fw-bold { font-weight: 800; }
 .text-secondary {
-    color: #959595;
+    color: var(--text-color-secondary);
     margin: 0;
     padding: 0;
     text-overflow: ellipsis;

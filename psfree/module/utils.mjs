@@ -15,7 +15,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
-import { Int } from './int64.js';
+import { Int } from './int64.mjs';
 
 export class DieError extends Error {
     constructor(...args) {
@@ -28,14 +28,15 @@ export function die(msg='') {
     throw new DieError(msg);
 }
 
-// const console = document.getElementById('console');
+const console = document.getElementById('console');
 // export function debug_log(msg='') {
 //     console.append(msg + '\n');
 // }
-export const debug_log = (string) => log(string, LogLevel.LOG);
+export const debug_log = print; 
+window.debug_log = debug_log;
 
 export function clear_log() {
-    // console.innerHTML = null;
+    console.innerHTML = null;
 }
 
 export function str2array(str, length, offset) {

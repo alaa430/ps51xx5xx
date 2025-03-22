@@ -126,14 +126,14 @@ const payload_map = [
         toPort: 9021
     },
     {
-        displayTitle: "etahen5xx",
-        description: "GDB server. Runs on port 2159.",
+        displayTitle: "etaHEN5xx",
+        description: "AIO HEN",
         fileName: "alaa.bin",
-        author: "john-tornblom",
-        projectSource: "https://github.com/ps5-payload-dev/gdbsrv",
-        binarySource: "https://github.com/ps5-payload-dev/pacbrew-repo/actions/runs/13686166926",
-        version: "0.5",
-        toPort: 9021
+        author: "LightningMods, Buzzer, sleirsgoevy, ChendoChap, astrelsky, illusion, CTN, SiSTR0, Nomadic",
+        projectSource: "https://github.com/LightningMods/etaHEN",
+        binarySource: "https://github.com/LightningMods/etaHEN/releases/download/1.9b/etaHEN.bin",
+        version: "1.9b",
+        supportedFirmwares: ["1.", "2.", "3.", "4.", "5."]
     },
     {
         displayTitle: "ps5debug",

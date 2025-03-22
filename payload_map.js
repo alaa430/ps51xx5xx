@@ -131,9 +131,9 @@ const payload_map = [
         fileName: "alaa.bin",
         author: "LightningMods, Buzzer, sleirsgoevy, ChendoChap, astrelsky, illusion, CTN, SiSTR0, Nomadic",
         projectSource: "https://github.com/LightningMods/etaHEN",
-        binarySource: "https://github.com/LightningMods/etaHEN/releases/download/1.9b/etaHEN.bin",
-        version: "1.9b",
-        supportedFirmwares: ["1.", "2.", "3.", "4.", "5."]
+        binarySource: "https://github.com/etaHEN/etaHEN/releases/download/2.0b-pre/etaHEN.bin",
+        version: "0.5.2",
+        toPort: 9021
     },
     {
         displayTitle: "ps5debug",

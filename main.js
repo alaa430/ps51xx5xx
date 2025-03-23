@@ -1,3 +1,56 @@
+function showTemporaryAlert(message, callback) {
+    // Crear el div para la alerta
+    let alertBox = document.createElement('div');
+    alertBox.style.position = 'fixed';
+    alertBox.style.top = '20px'; // Fija la posición vertical
+    alertBox.style.right = '-250px'; // Inicia fuera de la pantalla a la derecha
+    alertBox.style.backgroundColor = '#333'; // Color de fondo
+    alertBox.style.color = 'white'; // Color del texto blanco
+    alertBox.style.padding = '15px 30px'; // Aumentar el padding para mayor tamaño
+    alertBox.style.borderRadius = '5px';
+    alertBox.style.zIndex = '9999'; // Asegurar que esté encima de otros elementos
+    alertBox.style.textAlign = 'left'; // Alinear el texto a la izquierda
+    alertBox.style.transition = 'right 0.5s ease-out, opacity 0.5s ease-in'; // Transición para la entrada y salida
+    alertBox.style.fontSize = '18px'; // Aumentar el tamaño de la fuente
+    alertBox.style.width = '248px'; // Establecer un ancho fijo para la notificación
+    alertBox.style.display = 'flex'; // Usar flexbox para alinear el icono y el texto
+    alertBox.style.alignItems = 'center'; // Centrar verticalmente
+
+    // Crear el elemento de la imagen
+    let icon = document.createElement('img');
+    icon.src = '/ICONS/setting.png'; // Cambia 'setting.png' al nombre de tu imagen en el directorio raíz
+    icon.style.width = '44px'; // Tamaño del icono
+    icon.style.height = '44px';
+    icon.style.marginRight = '7px'; // Espacio entre el icono y el texto
+
+    // Crear el elemento de texto
+    let text = document.createElement('span');
+    text.innerText = message;
+
+    // Añadir la imagen y el texto al alertBox
+    alertBox.appendChild(icon);
+    alertBox.appendChild(text);
+
+    // Añadir la alerta al cuerpo
+    document.body.appendChild(alertBox);
+
+    // Desplazar la alerta hacia su posición final
+    setTimeout(() => {
+        alertBox.style.right = '20px'; // Se mantiene en el borde derecho con 20px de margen
+    }, 30); // Breve retardo para activar la animación
+
+    // Después de 4 segundos, hacer que la alerta desaparezca sin caer
+    setTimeout(() => {
+        alertBox.style.opacity = '0'; // Desaparece gradualmente
+    }, 4000); // Esperar 4 segundos antes de la desaparición
+
+    // Remover la alerta después de que la animación de desaparición termine
+    setTimeout(() => {
+        alertBox.remove(); // Remover la alerta
+        if (callback) callback(); // Llamar al callback si se proporciona
+    }, 4500); // Ajustar el tiempo para que coincida con la duración de la animación
+}
+
 // @ts-check
 
 
@@ -514,14 +567,14 @@ async function main(userlandRW, wkOnly = false) {
     let is_elfldr_running = await probe_sb_elfldr();
     await log("is elfldr running: " + is_elfldr_running, LogLevel.INFO);
     if (wkOnly && !is_elfldr_running) {
-        let res = confirm("elfldr doesnt seem to be running and in webkit only mode it wont be loaded, continue?");
+        let res = confirm("Exploit already loaded on PS5");
         if (!res) {
             throw new Error("Aborted");
         }
     }
 
     if (!wkOnly && is_elfldr_running) {
-        let res = confirm("elfldr seems to be running, would you like to skip the kernel exploit, and switch to sender-only mode?");
+        let res = confirm("Exploit already loaded on PS5");
         if (res) {
             wkOnly = true;
         }
@@ -530,8 +583,8 @@ async function main(userlandRW, wkOnly = false) {
     populatePayloadsPage(wkOnly);
 
     var load_payload_into_elf_store_from_local_file = async function (filename) {
-        await log("Loading ELF file: " + filename + " ...", LogLevel.LOG);
         const response = await fetch('payloads/' + filename);
+        showTemporaryAlert("[+] Loading ELF file: " + filename + " ...", LogLevel.LOG);
         if (!response.ok) {
             throw new Error(`Failed to fetch the binary file. Status: ${response.status}`);
         }
@@ -625,7 +678,12 @@ async function main(userlandRW, wkOnly = false) {
         // Patch PS4 SDK version
         if (typeof OFFSET_KERNEL_PS4SDK != 'undefined') {
             await krw.write4(get_kaddr(OFFSET_KERNEL_PS4SDK), 0x99999999);
-            await log("Patched PS4 SDK version to 99.99", LogLevel.INFO);
+        }
+    
+        // Patch PS5 SDK version
+        if (typeof OFFSET_KERNEL_PS5SDK != 'undefined') {
+            await krw.write4(get_kaddr(OFFSET_KERNEL_PS5SDK), 0x99999999);
+            await log("Patched PS5 SDK version to 99.99", LogLevel.INFO);
         }
 
         ///////////////////////////////////////////////////////////////////////
@@ -883,8 +941,20 @@ async function main(userlandRW, wkOnly = false) {
             is_elfldr_running = true;
         } else {
             await log("elfldr exited with non-zero code, port 9021 will likely not work", LogLevel.ERROR);
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            await new Promise(resolve => setTimeout(resolve, 2000));
         }
+
+        // Esperar 4 segundos antes de lanzar el siguiente payload
+        await new Promise(resolve => setTimeout(resolve, 4000));
+
+        if (await load_local_elf("etaHEN.elf") == 0) {
+            await log(`etaHEN listening on ${ip.ip}:9021`, LogLevel.INFO);
+            is_etaHEN_running = true;
+        } else {
+            await log("etaHEN exited with non-zero code, port 9021 will likely not work", LogLevel.ERROR);
+            await new Promise(resolve => setTimeout(resolve, 9000));
+        }
+
 
         // const SOCK_NONBLOCK = 0x20000000; // for future reference, this is ignored if we're not jailbroken and explicitly setting it with fcntl returns SCE_KERNEL_ERROR_EACCES (at least on 4.03)
 
@@ -1183,7 +1253,7 @@ async function main(userlandRW, wkOnly = false) {
     }
 
     // @ts-ignore
-    document.getElementById('top-bar-text').innerHTML = `Listening on: <span class="fw-bold">${ip.ip}</span> (port: ${ports}) (${ip.name})`;
+    document.getElementById('top-bar-text').innerHTML = `[/] Listening on: <span class="fw-bold">${ip.ip}</span> (port: ${ports}) (${ip.name})`;
 
     /** @type {Array<{payload_info: PayloadInfo, toast: HTMLElement}>} */
     let queue = [];
@@ -1272,7 +1342,7 @@ async function main(userlandRW, wkOnly = false) {
             throw new Error("Failed to accept connection");
         }
 
-        let toast = showToast("ELF Loader: Got a connection, reading...", -1);
+        let toast = showToast("", -1);
         try {
             // Got a connection, read all we can
             let write_ptr = elf_store.add32(0x0);
@@ -1287,10 +1357,9 @@ async function main(userlandRW, wkOnly = false) {
                 total_sz += read_res;
             }
 
-            updateToastMessage(toast, "ELF Loader: Parsing ELF...");
             await parse_elf_store(total_sz);
 
-            updateToastMessage(toast, "ELF Loader: Executing ELF...");
+            updateToastMessage(toast, "");
             await execute_elf_store();
 
             let out = await wait_for_elf_to_exit();
@@ -1298,7 +1367,6 @@ async function main(userlandRW, wkOnly = false) {
                 throw new Error('ELF Loader exited with non-zero code: 0x' + out.toString(16));
             }
 
-            updateToastMessage(toast, "ELF Loader: Payload exited with success code");
             setTimeout(removeToast, TOAST_SUCCESS_TIMEOUT, toast);
         } catch (error) {
             updateToastMessage(toast, `ELF Loader: Error: ${error}`);
